@@ -9,4 +9,4 @@ in /opt/notebooks
 Additional steps to add to this in the future are:
 - install the latest version of anaconda (instead of a fixed version).
 - install the following additional packages
-  - NONE FOR NOW
+  - NONE (for now).
