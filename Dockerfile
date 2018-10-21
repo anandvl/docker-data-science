@@ -25,5 +25,5 @@ echo "c.NotebookApp.password = u'sha1:6a3f528eec40:6e896b6e4828f525a6e20e5411cd1
 # Jupyter listens port: 1996
 EXPOSE 1996
 
-# Run Jupyter notebook as Docker main process
+# Run Jupyter notebook as Docker main process port of 1996
 CMD ["jupyter", "lab", "--allow-root", "--notebook-dir=/opt/notebooks", "--ip=0.0.0.0", "--port=1996", "--no-browser"]
