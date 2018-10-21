@@ -23,7 +23,7 @@ jupyter notebook --generate-config --allow-root && \
 echo "c.NotebookApp.password = u'sha1:6a3f528eec40:6e896b6e4828f525a6e20e5411cd1c8075d68619'" >> /root/.jupyter/jupyter_notebook_config.py
 
 # Jupyter listens port: 1996
-EXPOSE 1996
+EXPOSE 2005
 
 # Run Jupyter notebook as Docker main process 
-CMD ["jupyter", "lab", "--allow-root", "--notebook-dir=/opt/notebooks", "--ip=0.0.0.0", "--port=1996", "--no-browser"]
+CMD ["jupyter", "lab", "--allow-root", "--notebook-dir=/opt/notebooks", "--ip=0.0.0.0", "--port=2005", "--no-browser"]
