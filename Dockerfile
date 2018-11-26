@@ -1,29 +1,45 @@
-# Start with latest debian (9.5?)
-FROM debian
+#
+# A dockerfile to run Jupyterlab with anaconda Python distribution and access it by appropriately connecting to it.
+# Additional ports are also exposed so that it could be used to run other apps that may require their own ports
+# (for ex: Bokeh, flask, django, tornado, Pyspark, etc.)
+#
+# BUILD DOCKER:	docker build -t anandvl/anaconda .
+# RUN DOCKER: docker run -t -d --name=anaconda -p 2017:2017 -v $PWD:/home/anaconda anandvl/anaconda
+#	To access Jupyterlabs in the host browser - http://localhost:2017/lab 
+#
+
+# Start with latest debian (9.6)
+FROM debian:latest
+#FROM phusion/baseimage
 
 # Update and install wget and bzip2
 RUN apt-get update && \
 apt-get install -y wget bzip2
 
 # Install Anaconda.  Get the package, run the .sh script, and delete it
-RUN wget https://repo.continuum.io/archive/Anaconda3-5.3.0-Linux-x86_64.sh && \
-bash Anaconda3-5.3.0-Linux-x86_64.sh -b && \
-rm Anaconda3-5.3.0-Linux-x86_64.sh
+RUN wget https://repo.continuum.io/archive/Anaconda3-5.3.1-Linux-x86_64.sh && \
+bash Anaconda3-5.3.1-Linux-x86_64.sh -b && \
+rm Anaconda3-5.3.1-Linux-x86_64.sh
 
 # Set path to conda
 ENV PATH /root/anaconda3/bin:$PATH
 
-# Update Anaconda packages and install additional packages - cx_Oracle
+# Update Anaconda packages and install additional packages like cx_Oracle
 RUN conda update conda && \
 conda update --all -y 
 
 # Configure access to Jupyter
-RUN mkdir /opt/notebooks && \
+RUN mkdir /home/anaconda && \
 jupyter notebook --generate-config --allow-root && \
 echo "c.NotebookApp.password = u'sha1:6a3f528eec40:6e896b6e4828f525a6e20e5411cd1c8075d68619'" >> /root/.jupyter/jupyter_notebook_config.py
 
-# Jupyter listens port: 1996
-EXPOSE 2005
+# Expose following ports (Jupyter: 2017, Bokeh: 2016, flask: 2015, tornado: 2014, django: 2013, PySpark: 2012)
+EXPOSE 2017
+EXPOSE 2016
+EXPOSE 2015
+EXPOSE 2014
+EXPOSE 2013
+EXPOSE 2012
 
 # Run Jupyter notebook as Docker main process 
-CMD ["jupyter", "lab", "--allow-root", "--notebook-dir=/opt/notebooks", "--ip=0.0.0.0", "--port=2005", "--no-browser"]
+CMD ["jupyter", "lab", "--allow-root", "--notebook-dir=/home/anaconda", "--ip=0.0.0.0", "--port=2017", "--no-browser"]
