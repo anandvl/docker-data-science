@@ -6,15 +6,23 @@
 # BUILD DOCKER:	docker build -t anandvl/anaconda .
 # RUN DOCKER: docker run -t -d --name=anaconda -p 2017:2017 -v $PWD:/home/anaconda anandvl/anaconda
 #	To access Jupyterlabs in the host browser - http://localhost:2017/lab 
+# RUN DOCKER (for spyder): docker run --name=spyder -t -d --net=host -e DISPLAY -v "$HOME/.Xauthority:/root/.Xauthority:rw" -v $PWD:/home/anaconda anandvl/anaconda /bin/bash -c spyder
 #
 
 # Start with latest debian (9.6)
 FROM debian:latest
 #FROM phusion/baseimage
+MAINTAINER Anand Lakshmikumaran <anandvlak@gmail.com>
 
-# Update and install wget and bzip2
+# Following is required for spyder
+ENV QT_XKB_CONFIG_ROOT /usr/share/X11/xkb
+
+# Update and install wget, bzip2, and multiple other packages to run spyder
 RUN apt-get update && \
-apt-get install -y wget bzip2
+apt-get install -y wget bzip2 && \
+apt-get install -y xterm libxcursor1 libxss1 libasound2 && \
+echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list && \
+apt-get update && apt-get -t stretch-backports install -y libegl1
 
 # Install Anaconda.  Get the package, run the .sh script, and delete it
 RUN wget https://repo.continuum.io/archive/Anaconda3-5.3.1-Linux-x86_64.sh && \
@@ -27,6 +35,7 @@ ENV PATH /root/anaconda3/bin:$PATH
 # Update Anaconda packages and install additional packages like cx_Oracle
 RUN conda update conda && \
 conda update --all -y 
+# conda install cx_Oracle
 
 # Configure access to Jupyter
 RUN mkdir /home/anaconda && \
