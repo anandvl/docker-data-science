@@ -1,4 +1,6 @@
 # docker-python-anaconda
+Dockerfile for base anaconda (with Jupyterlab)
+
 This is a repository of the Dockerfile used to create a dockerimage with the base
 anaconda install on a debian base.  It starts a process to run jupyterlab on port 
 2017 with the root folder in /home/anaconda
